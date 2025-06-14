@@ -17,13 +17,11 @@ type Err = { email?: string; password?: string }
 export default function LoginForm() {
   const router = useRouter()
 
-  /* ---------------- state ---------------- */
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Err>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [successName, setSuccessName] = useState<string | null>(null)
 
-  /* ---------------- validation helpers ---------------- */
   const isEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
   const validate = (data: FormData): Err => {
     const err: Err = {}
@@ -36,13 +34,11 @@ export default function LoginForm() {
   const filterTouched = (err: Err): Err =>
     Object.fromEntries(Object.entries(err).filter(([k]) => touched[k]))
 
-  /* ---------------- live validate ---------------- */
   const handleChange = (e: React.ChangeEvent<HTMLFormElement>) => {
     setTouched(prev => ({ ...prev, [e.target.name]: true }))
     setErrors(filterTouched(validate(new FormData(e.currentTarget))))
   }
 
-  /* ---------------- submit ---------------- */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
@@ -66,14 +62,17 @@ export default function LoginForm() {
         data.get('password') as string
       )
 
-      // fetch firstName from Firestore
       const snap = await getDoc(doc(db, 'users', cred.user.uid))
       const firstName = snap.exists() ? (snap.data().firstName as string) : 'User'
 
-      setSuccessName(firstName) // show toast
+      setSuccessName(firstName)
       setTimeout(() => router.push('/dash'), 2000)
-    } catch (err: any) {
-      setErrors({ email: err.message })
+    } catch (err) {
+      if (err instanceof Error) {
+        setErrors({ email: err.message })
+      } else {
+        setErrors({ email: 'Unknown error occurred' })
+      }
     } finally {
       setLoading(false)
     }
@@ -81,7 +80,6 @@ export default function LoginForm() {
 
   return (
     <>
-      {/* form card */}
       <form
         onSubmit={handleSubmit}
         onChange={handleChange}
@@ -90,7 +88,6 @@ export default function LoginForm() {
         <Input name="email" label="Email" type="email" error={errors.email} />
         <Input name="password" label="Password" type="password" error={errors.password} />
 
-        {/* remember me */}
         <Checkbox name="remember" label="Keep me logged in (30 days)" />
 
         <button
@@ -104,7 +101,6 @@ export default function LoginForm() {
         </button>
       </form>
 
-      {/* success toast */}
       {successName && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/60">
           <div className="bg-[var(--gp-light)] text-[var(--gp-dark)] px-6 py-4 rounded-xl shadow-xl animate-scale">
