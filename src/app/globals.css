@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --gp-light: #D6EBFF;   /* Azul claro */
+  --gp-dark: #003566;    /* Azul escuro */
+  --gp-white: #ffffff;
+  --gp-black: #000000;
 }
 
 @theme inline {
