@@ -19,9 +19,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    --background: #ffffff;
+    --foreground: #171717;
+
+    --gp-light: #D6EBFF;   /* Azul claro */
+    --gp-dark: #003566;    /* Azul escuro */
+    --gp-white: #ffffff;
+    --gp-black: #000000;
+}
 }
 
 body {
